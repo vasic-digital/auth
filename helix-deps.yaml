@@ -1,0 +1,27 @@
+# helix-deps.yaml — Auth submodule Submodule-Dependency Manifest
+# Per HelixConstitution §11.4.31 (Submodule-Dependency-Manifest Mandate).
+#
+# Auth is a leaf Go submodule (digital.vasic.auth) providing JWT,
+# API-key, OAuth2, middleware, and token primitives. It has ZERO
+# own-org submodule dependencies — pure Go module + standard
+# 3rd-party deps (golang-jwt etc.) declared in go.mod.
+#
+# Schema reference: <constitution-submodule>/Constitution.md §11.4.31.
+# Last updated: 2026-05-15 (Phase 3-debt closure for Auth).
+
+schema_version: 1
+
+# Auth has no own-org dependencies. The empty deps array is the
+# honest manifest for a leaf submodule. Future agents reading this
+# file have positive evidence Auth is incorporable as a peer with
+# zero transitive own-org-dep recursion.
+deps: []
+
+transitive_handling:
+  recursive: true
+  conflict_resolution: operator-required
+
+# Auth is a Go module — language_specific_subtree is false because
+# the entire submodule is the Go subtree (no inner non-Go subtrees
+# requiring §11.4.29 snake_case exemption).
+language_specific_subtree: false
