@@ -1,3 +1,24 @@
+// Package stress contains concurrency / throughput stress tests
+// for the Auth library. Per CONST-050(A), in-memory fakes are
+// permitted only in unit tests — and the tests in this file use
+// apikey.NewInMemoryStore + token.NewInMemoryStore as their
+// backing storage layer.
+//
+// Status: ACKNOWLEDGED-LAYER-MISMATCH (round-20 2026-05-18).
+// These tests genuinely stress-test the in-memory store's
+// concurrent-access properties (lock contention, race conditions,
+// goroutine-fanout safety). They are honest about what they
+// stress — no claim of coverage against Postgres / Redis under
+// load.
+//
+// To meet CONST-050(B), augment with sibling
+// `auth_stress_postgres_test.go` that exercises the same
+// scenarios against a real Postgres-backed apikey.Store. Tracked
+// as round-21+ work.
+//
+// Until then: these in-memory stress tests REMAIN VALID
+// anti-bluff tests of the InMemoryStore concurrency
+// implementation specifically.
 package stress
 
 import (

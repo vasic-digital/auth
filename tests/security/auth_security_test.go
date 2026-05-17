@@ -1,3 +1,27 @@
+// Package security contains security-property tests for the Auth
+// library. The tests in this file currently use apikey.NewInMemoryStore
+// and token.NewInMemoryStore as the backing storage layer — per
+// CONST-050(A), in-memory fakes are permitted only in unit tests.
+//
+// Status: ACKNOWLEDGED-LAYER-MISMATCH (round-20 2026-05-18).
+// These tests genuinely verify the in-memory store's security
+// properties (duplicate-key rejection, expired-key handling,
+// token revocation, JWT tamper detection via real JWT manager,
+// httptest-driven middleware behaviour). They are honest about
+// what they test — none of them claim coverage of Postgres /
+// Redis-backed store security.
+//
+// To meet CONST-050(B) full test-type coverage, this file should
+// be augmented with a sibling `auth_security_postgres_test.go`
+// that exercises the same scenarios against a real Postgres-
+// backed apikey.Store (and similar for Redis-backed token.Store).
+// Tracked as round-21+ work — listed in this submodule's CLAUDE.md
+// follow-up section once added.
+//
+// For now: these in-memory tests REMAIN VALID anti-bluff tests of
+// the InMemoryStore implementation specifically. A reader scanning
+// `tests/security/` for "real-infra security audit" should also
+// look for the (currently missing) postgres/redis variants.
 package security
 
 import (
