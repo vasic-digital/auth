@@ -6,12 +6,15 @@ package apikey
 import (
 	"crypto/rand"
 	"encoding/hex"
+	"errors"
 	"fmt"
 	"strings"
 	"sync"
 	"time"
 
 	"github.com/google/uuid"
+
+	"digital.vasic.auth/pkg/i18n"
 )
 
 // APIKey represents an API key with its metadata.
@@ -150,7 +153,8 @@ func Validate(store KeyStore, keyString string) (*APIKey, error) {
 	}
 
 	if key.IsExpired() {
-		return nil, fmt.Errorf("API key has expired")
+		// CONST-046: user-facing text via Translator (bundle key `auth_apikey_expired`).
+		return nil, errors.New(i18n.T("auth_apikey_expired"))
 	}
 
 	return key, nil
@@ -177,7 +181,8 @@ func (s *InMemoryStore) Store(key *APIKey) error {
 	defer s.mu.Unlock()
 
 	if _, exists := s.byKey[key.Key]; exists {
-		return fmt.Errorf("API key already exists: %s", key.Key)
+		// CONST-046: bundle key `auth_apikey_already_exists` + opaque key arg.
+		return errors.New(i18n.T("auth_apikey_already_exists", key.Key))
 	}
 
 	s.byKey[key.Key] = key
@@ -192,7 +197,8 @@ func (s *InMemoryStore) Get(keyString string) (*APIKey, error) {
 
 	key, ok := s.byKey[keyString]
 	if !ok {
-		return nil, fmt.Errorf("API key not found")
+		// CONST-046: bundle key `auth_apikey_not_found`.
+		return nil, errors.New(i18n.T("auth_apikey_not_found"))
 	}
 	return key, nil
 }
@@ -204,7 +210,8 @@ func (s *InMemoryStore) GetByID(id string) (*APIKey, error) {
 
 	key, ok := s.byID[id]
 	if !ok {
-		return nil, fmt.Errorf("API key not found for ID: %s", id)
+		// CONST-046: bundle key `auth_apikey_not_found_for_id` + opaque id arg.
+		return nil, errors.New(i18n.T("auth_apikey_not_found_for_id", id))
 	}
 	return key, nil
 }
@@ -216,7 +223,8 @@ func (s *InMemoryStore) Delete(keyString string) error {
 
 	key, ok := s.byKey[keyString]
 	if !ok {
-		return fmt.Errorf("API key not found: %s", keyString)
+		// CONST-046: bundle key `auth_apikey_not_found_for_delete` + opaque key arg.
+		return errors.New(i18n.T("auth_apikey_not_found_for_delete", keyString))
 	}
 
 	delete(s.byKey, keyString)

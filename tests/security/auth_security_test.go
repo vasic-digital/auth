@@ -164,7 +164,8 @@ func TestSecurity_APIKeyStoreDeduplication(t *testing.T) {
 
 	err := store.Store(duplicate)
 	assert.Error(t, err)
-	assert.Contains(t, err.Error(), "already exists")
+	// CONST-046: assert on i18n bundle key, not English literal.
+	assert.Contains(t, err.Error(), "auth_apikey_already_exists")
 
 	retrieved, err := store.Get("ak-duplicate-key")
 	require.NoError(t, err)

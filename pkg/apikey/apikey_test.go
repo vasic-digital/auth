@@ -256,10 +256,14 @@ func TestInMemoryStore_Store(t *testing.T) {
 	err := store.Store(key)
 	require.NoError(t, err)
 
-	// Duplicate should fail
+	// Duplicate should fail. CONST-046: assert on the i18n bundle key
+	// (`auth_apikey_already_exists`), not on hardcoded English text.
+	// The Noop translator (default) surfaces the key verbatim, which
+	// keeps this test stable across locale backends.
 	err = store.Store(key)
 	assert.Error(t, err)
-	assert.Contains(t, err.Error(), "already exists")
+	assert.Contains(t, err.Error(), "auth_apikey_already_exists")
+	assert.Contains(t, err.Error(), "ak-test123")
 }
 
 func TestInMemoryStore_Get(t *testing.T) {
