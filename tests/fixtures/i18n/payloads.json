@@ -1,0 +1,57 @@
+{
+  "_comment": "Round-248 bilingual fixtures for Auth. Used by auth_describe_challenge.sh + challenges/runner/main.go to verify UTF-8 round-trip across JWT claims and API key metadata. CONST-046 alignment: i18n.Translator NoopTranslator returns bundle keys verbatim — these fixtures prove that opaque arg values (Cyrillic, Japanese, Arabic, Han) survive the full create/validate/store/retrieve cycle byte-for-byte. Article XI §11.9 forensic anchor.",
+  "subjects": [
+    {
+      "locale": "en",
+      "name": "Alice",
+      "key_label": "Production read-only API key",
+      "claim_role": "admin",
+      "jwt_sub": "user-en-001",
+      "scopes": ["read", "write"],
+      "metadata_region": "us-east-1"
+    },
+    {
+      "locale": "sr",
+      "name": "Милош",
+      "key_label": "Продукциони кључ за читање",
+      "claim_role": "администратор",
+      "jwt_sub": "корисник-sr-002",
+      "scopes": ["читање", "писање"],
+      "metadata_region": "eu-central-1"
+    },
+    {
+      "locale": "ja",
+      "name": "田中",
+      "key_label": "本番読み取り専用APIキー",
+      "claim_role": "管理者",
+      "jwt_sub": "ユーザー-ja-003",
+      "scopes": ["読み取り", "書き込み"],
+      "metadata_region": "ap-northeast-1"
+    },
+    {
+      "locale": "ar",
+      "name": "محمد",
+      "key_label": "مفتاح API للقراءة فقط للإنتاج",
+      "claim_role": "مسؤول",
+      "jwt_sub": "مستخدم-ar-004",
+      "scopes": ["قراءة", "كتابة"],
+      "metadata_region": "me-south-1"
+    },
+    {
+      "locale": "zh-CN",
+      "name": "王伟",
+      "key_label": "生产环境只读API密钥",
+      "claim_role": "管理员",
+      "jwt_sub": "用户-zh-005",
+      "scopes": ["读取", "写入"],
+      "metadata_region": "cn-north-1"
+    }
+  ],
+  "expected_invariants": {
+    "jwt_claim_byte_preservation": "Every claim value passed to jwt.Manager.Create MUST round-trip via Validate byte-for-byte — including Cyrillic, Han, Arabic, and CJK characters.",
+    "apikey_name_byte_preservation": "apikey.Generator.Generate + InMemoryStore.Store/Get MUST preserve the Name field byte-for-byte across non-ASCII locales.",
+    "scopes_preservation": "Non-ASCII scope strings MUST be preserved through HasScope / HasAllScopes lookups (byte-equality semantics).",
+    "i18n_passthrough": "i18n.NoopTranslator.T(key, arg) MUST emit key + 0x1F + arg verbatim — no encoding mutation, no case-fold, no normalization. This is the load-bearing guarantee that consuming projects' real translators receive byte-clean arguments.",
+    "refresh_preserves_custom_claims": "jwt.Manager.Refresh MUST preserve every non-standard claim verbatim (standard claims exp/iat/iss are regenerated)."
+  }
+}

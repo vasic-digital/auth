@@ -1,41 +1,73 @@
-# Binaries
+# Auth — .gitignore (CONST-053 compliant: no build artefacts, caches,
+# temp files, secrets, or generated reports ever committed)
+
+# --- Build artefacts (recreatable) ---
 *.exe
 *.exe~
 *.dll
 *.so
 *.dylib
-
-# Test binary
+*.a
+*.o
+*.class
 *.test
+/bin/
+/build/
+/dist/
+/out/
 
-# Output
+# --- Test / coverage outputs (regeneratable via go test) ---
 *.out
-
-# Coverage
 coverage.html
 coverage.out
+coverage.txt
+profile.out
+*.prof
 
-# IDE
-.idea/
-.vscode/
+# --- Caches ---
+.cache/
+.gocache/
+
+# --- Temp files ---
+*.tmp
 *.swp
 *.swo
+*.orig
+*.rej
 *~
 
-# OS
+# --- OS / IDE personal state ---
 .DS_Store
 Thumbs.db
+.idea/
+.vscode/
+.history/
 
-# Vendor (if not checked in)
-# vendor/
-
-# Build
-/bin/
-/dist/
-
-# Environment files
+# --- Sensitive-data files (CONST-042) ---
 .env
 .env.local
 .env.*.local
+.env.*
+!.env.example
+*.pem
+*.key
+*.crt
+id_rsa*
+id_ed25519*
+.netrc
+secrets/
+api_keys.sh
 
+# --- Logs ---
+*.log
+
+# --- Round-248 runner artefacts ---
+/tmp/auth_round248_runner
+/tmp/auth_run.log
+/tmp/auth_build.log
+
+# --- Local reports / demos (regeneratable) ---
 reports/demos/
+
+# --- Vendor (currently un-vendored) ---
+# vendor/
